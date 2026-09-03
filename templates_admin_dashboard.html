@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Daily Attendance Summary - St. Lawrence Muwanga SS</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: center; }
+        th { background-color: #2c3e50; color: white; }
+        .no-print { margin-bottom: 20px; }
+
+        /* Print Specific Styles */
+        @media print {
+            .no-print { display: none; }
+            th { background-color: #000 !important; color: #fff !important; }
+            body { margin: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <h2>ST. LAWRENCE MUWANGA SECONDARY SCHOOL</h2>
+    <h3>Daily Attendance Report - Date: {{ date }}</h3>
+
+    <div class="no-print">
+        <form method="GET" action="/admin/dashboard">
+            <label>Select Date: </label>
+            <input type="date" name="date" value="{{ date }}">
+            <button type="submit">Filter</button>
+        </form>
+        <button onclick="window.print()" style="margin-top: 10px; padding: 8px 16px;">Print Summary</button>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Class</th>
+                <th>Total Recorded</th>
+                <th>Present</th>
+                <th>Absent</th>
+                <th>Attendance Rate (%)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in summary %}
+            <tr>
+                <td>{{ row.student_class }}</td>
+                <td>{{ row.total_logged }}</td>
+                <td>{{ row.present_count }}</td>
+                <td>{{ row.absent_count }}</td>
+                <td>{{ "%.1f"|format((row.present_count / row.total_logged) * 100) }}%</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="5">No attendance records submitted for this date.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</body>
+</html>

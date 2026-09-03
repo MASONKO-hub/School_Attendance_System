@@ -1,0 +1,27 @@
+-- Users (Teachers & Admins)
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    username VARCHAR(50) UNIQUE NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    role VARCHAR(20) CHECK (role IN ('teacher', 'admin')),
+    assigned_class VARCHAR(10) -- NULL for admins
+);
+
+-- Students Master List
+CREATE TABLE students (
+    student_id VARCHAR(20) PRIMARY KEY,
+    full_name VARCHAR(100) NOT NULL,
+    gender CHAR(1) CHECK (gender IN ('M', 'F')),
+    class VARCHAR(10) NOT NULL,
+    stream VARCHAR(20)
+);
+
+-- Daily Attendance Log
+CREATE TABLE attendance (
+    id SERIAL PRIMARY KEY,
+    student_id VARCHAR(20) REFERENCES students(student_id),
+    date DATE NOT NULL,
+    status VARCHAR(10) CHECK (status IN ('Present', 'Absent', 'Excused')),
+    recorded_by INTEGER REFERENCES users(id),
+    UNIQUE(student_id, date)
+);
